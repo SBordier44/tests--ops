@@ -1,0 +1,51 @@
+- name: Apply manifests to k3s cluster
+  hosts: localhost
+  gather_facts: false
+  vars:
+    kubeconfig_path: "{{ lookup('env', 'HOME') }}/final-project/04_ansible/kubeconfig/kubeconfig"
+    venv_dir: "{{ lookup('env', 'HOME') }}/.venvs/ansible-k8s"
+  tasks:
+    - name: Wait for k3s to be ready
+      pause:
+        seconds: 15
+        prompt: Waiting for k3s to be ready
+
+    - name: Install venv prerequisites
+      become: true
+      apt:
+        name:
+          - python3-venv
+          - python3-pip
+        state: present
+        update_cache: true
+
+    - name: Create venv for kubernetes client
+      command:
+        cmd: "python3 -m venv {{ venv_dir }}"
+      args:
+        creates: "{{ venv_dir }}/bin/activate"
+
+    - name: Install kubernetes python client in venv
+      command:
+        cmd: "{{ venv_dir }}/bin/python -m pip install -U pip setuptools wheel kubernetes"
+      register: pip_install
+      changed_when: "'Successfully installed' in pip_install.stdout or 'Installing collected packages' in pip_install.stdout"
+
+    - name: Ensure namespace icgroup exists
+      delegate_to: localhost
+      vars:
+        ansible_python_interpreter: "{{ venv_dir }}/bin/python"
+      k8s:
+        kubeconfig: "{{ kubeconfig_path }}"
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: icgroup
+            labels:
+              name: icgroup
+
+    - name: Apply manifests
+      command:
+        cmd: "kubectl --kubeconfig {{ kubeconfig_path }} apply -Rf {{ lookup('env', 'HOME') }}/final-project/03_kubernetes/"

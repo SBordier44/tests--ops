@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ic-webapp-deployment
+  namespace: icgroup
+  labels:
+    env: prod
+    app: ic-webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ic-webapp
+  template:
+    metadata:
+      name: ic-webapp
+      labels:
+        app: ic-webapp
+    spec:
+      containers:
+        - name: ic-webapp
+          image: ulrichsteve/ic-webapp:1.0
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          envFrom:
+            - configMapRef:
+                name: ic-webapp-cm
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always

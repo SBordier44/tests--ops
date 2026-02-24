@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo-deployment
+  namespace: icgroup
+  labels:
+    env: prod
+    app: odoo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odoo
+  template:
+    metadata:
+      name: odoo
+      labels:
+        app: odoo
+    spec:
+      containers:
+        - name: odoo
+          image: odoo:19
+          imagePullPolicy: IfNotPresent
+          restartPolicy: Always
+          resources:
+            requests:
+              cpu: 500m
+              memory: 128Mi
+            limits:
+              cpu: 1
+              memory: 512Mi
+          env:
+            - name: HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: odoo-cm
+                  key: host
+            - name: USER
+              valueFrom:
+                configMapKeyRef:
+                  name: odoo-cm
+                  key: user
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: odoo-secret
+                  key: password
+          ports:
+            - containerPort: 8069
+              protocol: TCP
+          volumeMounts:
+            - name: odoo-storage
+              mountPath: /var/lib/odoo
+            - name: odoo-config
+              mountPath: /etc/odoo
+            - name: odoo-addons
+              mountPath: /mnt/extra-addons
+      volumes:
+        - name: odoo-storage
+          persistentVolumeClaim:
+            claimName: odoo-pvc
+        - name: odoo-config
+          hostPath:
+            path: /data-odoo/config
+        - name: odoo-addons
+          hostPath:
+            path: /data-odoo/addons
