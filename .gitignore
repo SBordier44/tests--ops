@@ -1,0 +1,6 @@
+../.idea
+.vscode
+*.tfstate
+*.tfstate.backup
+*.log
+*.lock.*

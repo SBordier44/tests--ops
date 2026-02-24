@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ic-webapp-cm
+  namespace: icgroup
+  labels:
+    env: prod
+    app: ic-webapp
+data:
+  ODOO_URL: "http://ec2-13-38-32-156.eu-west-3.compute.amazonaws.com:30010"
+  PGADMIN_URL: "http://ec2-13-38-32-156.eu-west-3.compute.amazonaws.com:30011"

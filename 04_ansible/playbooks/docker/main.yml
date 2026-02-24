@@ -1,0 +1,10 @@
+- name: docker deploy
+  hosts: docker
+  become: yes
+  vars:
+    network_name: "ic-network"
+  roles:
+    #- docker
+    - ic-webapp
+    - odoo
+    - pgadmin

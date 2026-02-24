@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for pgadmin
+
+pgadmin_name: pgadmin
+pgadmin_image: dpage/pgadmin4:latest
+pgadmin_email: admin@example.com
+pgadmin_password: admin
+pgadmin_port: 8082
+network_name: "{{ network_name }}"
