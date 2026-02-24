@@ -9,7 +9,7 @@ pipeline {
 		DOCKERHUB_PASSWORD = credentials('dockerhub_password')
 		PORT_EXT = "8090"
 		PORT_APP = "8080"
-		IP = "172.17.0.1"
+		IP = "127.0.0.1"
 	}
 	stages {
 		stage('Build Image'){
