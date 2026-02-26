@@ -16,7 +16,7 @@ pipeline {
 			steps{
 				script {
 					sh '''
-					docker build --no-cache -f ${DOCKER_DIR}/${DOCKERFILE_NAME} -t ${DOCKERHUB_ID}/${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_DIR}/.
+					docker build -f ${DOCKER_DIR}/${DOCKERFILE_NAME} -t ${DOCKERHUB_ID}/${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_DIR}/.
 					'''
 				}
 			}
