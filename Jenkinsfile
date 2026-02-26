@@ -67,60 +67,60 @@ pipeline {
 		    }
 		  }
 		}
-		stage('Build Docker EC2'){
-			agent {
-				docker {
-					image 'jenkins/jnlp-agent-terraform'
-					args '--entrypoint=""'
-				}
-			}
-			steps{
-				script {
-					sh '''
-						cd 02_terraform/
-						terraform init
-						terraform apply -var="stack_name=docker" -auto-approve
-					'''
-				}
-			}
-		}
-		stage('Ansible deploy apps on docker EC2'){
-			agent {
-				docker {
-					image 'registry.gitlab.com/robconnolly/docker-ansible:latest'
-				}
-			}
-			steps {
-				script {
-					sh '''
-						cd 04_ansible/
-						ansible docker -m ping --private-key ../02_terraform/keypair/docker.pem
-						ansible-playbook playbooks/docker/main.yml --private-key ../02_terraform/keypair/docker.pem
-					'''
-				}
-			}
-		}
-		stage('destroy Docker instance on AWS with terraform') {
-      steps {
-          input message: "Confirmer vous la suppression de l'instance Docker  dans AWS ?", ok: 'Yes'
-      }
-    }
-		stage('Destroy Docker EC2'){
-			agent {
-				docker {
-					image 'jenkins/jnlp-agent-terraform'
-					args '--entrypoint=""'
-				}
-			}
-			steps{
-				script {
-					sh '''
-						cd 02_terraform/
-						terraform destroy -var="stack_name=docker" -auto-approve
-					'''
-				}
-			}
-		}
+// 		stage('Build Docker EC2'){
+// 			agent {
+// 				docker {
+// 					image 'jenkins/jnlp-agent-terraform'
+// 					args '--entrypoint=""'
+// 				}
+// 			}
+// 			steps{
+// 				script {
+// 					sh '''
+// 						cd 02_terraform/
+// 						terraform init
+// 						terraform apply -var="stack_name=docker" -auto-approve
+// 					'''
+// 				}
+// 			}
+// 		}
+// 		stage('Ansible deploy apps on docker EC2'){
+// 			agent {
+// 				docker {
+// 					image 'registry.gitlab.com/robconnolly/docker-ansible:latest'
+// 				}
+// 			}
+// 			steps {
+// 				script {
+// 					sh '''
+// 						cd 04_ansible/
+// 						ansible docker -m ping --private-key ../02_terraform/keypair/docker.pem
+// 						ansible-playbook playbooks/docker/main.yml --private-key ../02_terraform/keypair/docker.pem
+// 					'''
+// 				}
+// 			}
+// 		}
+// 		stage('destroy Docker instance on AWS with terraform') {
+//       steps {
+//           input message: "Confirmer vous la suppression de l'instance Docker  dans AWS ?", ok: 'Yes'
+//       }
+//     }
+// 		stage('Destroy Docker EC2'){
+// 			agent {
+// 				docker {
+// 					image 'jenkins/jnlp-agent-terraform'
+// 					args '--entrypoint=""'
+// 				}
+// 			}
+// 			steps{
+// 				script {
+// 					sh '''
+// 						cd 02_terraform/
+// 						terraform destroy -var="stack_name=docker" -auto-approve
+// 					'''
+// 				}
+// 			}
+// 		}
 		stage('Build Kubernetes EC2'){
 			agent {
 				docker {
@@ -134,6 +134,7 @@ pipeline {
 						cd 02_terraform/
 						terraform init
 						terraform apply -var="stack_name=kubernetes" -auto-approve
+						sleep 3m
 					'''
 				}
 			}
@@ -154,6 +155,11 @@ pipeline {
 				}
 			}
 		}
+		stage('Destroy Kubernetes') {
+      steps {
+        input message: "Confirmer vous la suppression du Kubernetes dans AWS ?", ok: 'Yes'
+      }
+    }
 		stage('Destroy Kubernetes EC2'){
 			agent {
 				docker {
@@ -164,11 +170,6 @@ pipeline {
 			steps{
 				script {
 					sh '''
-						mkdir -p ~/.aws
-						echo "[default]" > ~/.aws/credentials
-						echo -e "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
-						echo -e "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
-						chmod 400 ~/.aws/credentials
 						cd 02_terraform/
 						terraform destroy -var="stack_name=kubernetes" -auto-approve
 					'''
