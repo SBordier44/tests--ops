@@ -9,4 +9,4 @@
 
 - name: start odoo stack
   command:
-    cmd: "docker-compose -f /home/{{ ansible_user }}/odoo-compose.yml up -d"
+    cmd: "docker compose -f /home/{{ ansible_user }}/odoo-compose.yml up -d"

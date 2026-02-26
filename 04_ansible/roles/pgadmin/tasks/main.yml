@@ -9,4 +9,4 @@
 
 - name: start pgadmin stack
   command:
-    cmd: "docker-compose -f /home/{{ ansible_user }}/pgadmin-compose.yml up -d"
+    cmd: "docker compose -f /home/{{ ansible_user }}/pgadmin-compose.yml up -d"
