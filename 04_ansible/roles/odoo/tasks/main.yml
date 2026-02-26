@@ -5,8 +5,8 @@
   template:
     src: odoo-compose.yml.j2
     dest: /home/{{ ansible_user }}/odoo-compose.yml
-    mode: '0644'
+    mode: "0555"
 
 - name: start odoo stack
   command:
-    cmd: docker-compose -f /home/{{ ansible_user }}/odoo-compose.yml up -d
+    cmd: "docker-compose -f /home/{{ ansible_user }}/odoo-compose.yml up -d"
