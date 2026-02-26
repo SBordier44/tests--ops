@@ -28,7 +28,6 @@ pipeline {
 						docker ps -a | grep -i ${DOCKER_IMAGE} && docker rm -f ${DOCKER_IMAGE}
 						docker run --name ${DOCKER_IMAGE} -dp $PORT_EXT:$PORT_APP ${DOCKERHUB_ID}/${DOCKER_IMAGE}:${DOCKER_TAG}
 						sleep 5
-						docker exec -it ${DOCKER_IMAGE} 'curl -I http://127.0.0.1:8080 | grep -i "200"'
 						curl -I http://$IP:$PORT_EXT | grep -i "200"
 					'''
 				}
