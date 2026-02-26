@@ -21,7 +21,7 @@ resource "aws_instance" "ec2_docker" {
   }
 
   provisioner "local-exec" {
-    command = "echo -e '\nansible_host: ${aws_eip.eip_docker.public_ip}' >> ../04_ansible/host_vars/docker.yml"
+    command = "echo 'ansible_host: ${aws_eip.eip_docker.public_ip}' > ../04_ansible/host_vars/docker.yml"
   }
 
   tags = {

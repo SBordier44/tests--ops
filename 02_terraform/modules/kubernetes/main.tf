@@ -21,7 +21,7 @@ resource "aws_instance" "ec2_kubernetes" {
   }
 
   provisioner "local-exec" {
-    command = "echo -e '\nansible_host: ${aws_eip.eip_kubernetes.public_ip}' >> ../04_ansible/host_vars/k3s.yml"
+    command = "echo 'ansible_host: ${aws_eip.eip_kubernetes.public_ip}' > ../04_ansible/host_vars/k3s.yml"
   }
 
   tags = {
