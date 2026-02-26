@@ -88,7 +88,7 @@ pipeline {
 				script {
 					sh '''
 						cd 04_ansible/
-						ansible_playbook playbooks/docker/main.yml
+						ansible-playbook playbooks/docker/main.yml
 					'''
 				}
 			}
@@ -101,6 +101,7 @@ pipeline {
 			agent {
 				docker {
 					image 'jenkins/jnlp-agent-terraform'
+					args '--entrypoint=""'
 				}
 			}
 			steps{
@@ -115,7 +116,7 @@ pipeline {
 						echo -e "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
 						chmod 400 ~/.aws/credentials
 						cd 02_terraform/
-						terraform destroy -var="stack=docker" -auto-approve
+						terraform destroy -var="stack_name=docker" -auto-approve
 					'''
 				}
 			}
@@ -128,6 +129,7 @@ pipeline {
 			agent {
 				docker {
 					image 'jenkins/jnlp-agent-terraform'
+					args '--entrypoint=""'
 				}
 			}
 			steps{
@@ -140,7 +142,7 @@ pipeline {
 						chmod 400 ~/.aws/credentials
 						cd 02_terraform/
 						terraform init
-						terraform apply -var="stack=kubernetes" -auto-approve
+						terraform apply -var="stack_name=kubernetes" -auto-approve
 					'''
 				}
 			}
@@ -155,7 +157,7 @@ pipeline {
 				script {
 					sh '''
 						cd 04_ansible/
-						ansible_playbook playbooks/k3s/main.yml
+						ansible-playbook playbooks/k3s/main.yml
 					'''
 				}
 			}
@@ -168,6 +170,7 @@ pipeline {
 			agent {
 				docker {
 					image 'jenkins/jnlp-agent-terraform'
+					args '--entrypoint=""'
 				}
 			}
 			steps{
@@ -182,7 +185,7 @@ pipeline {
 						echo -e "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
 						chmod 400 ~/.aws/credentials
 						cd 02_terraform/
-						terraform destroy -var="stack=kubernetes" -auto-approve
+						terraform destroy -var="stack_name=kubernetes" -auto-approve
 					'''
 				}
 			}
