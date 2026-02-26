@@ -134,7 +134,7 @@ pipeline {
 						cd 02_terraform/
 						terraform init
 						terraform apply -var="stack_name=kubernetes" -auto-approve
-						sleep 3m
+						sleep 1m
 					'''
 				}
 			}
