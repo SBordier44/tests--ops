@@ -4,3 +4,6 @@
 *.tfstate.backup
 *.log
 *.lock.*
+.terraform/
+*.terraform.lock.hcl
+*.pem
