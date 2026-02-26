@@ -8,7 +8,7 @@
 
 - name: create network
   docker_network:
-    name: "{{ docker_network }}"
+    name: "{{ network_name }}"
 
 - name: run ic-webapp container
   docker_container:
@@ -22,4 +22,4 @@
       ODOO_URL: "{{ odoo_url }}"
       PGADMIN_URL: "{{ pgadmin_url }}"
     networks:
-      - name: "{{ docker_network }}"
+      - name: "{{ network_name }}"
