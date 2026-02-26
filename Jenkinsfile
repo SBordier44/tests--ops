@@ -9,7 +9,7 @@ pipeline {
 		DOCKERHUB_PASSWORD = credentials('dockerhub_password')
 		PORT_EXT = "8090"
 		PORT_APP = "8080"
-		IP = "169.6.3.2"
+		IP = "192.168.100.13" // Docker Host IP
 	}
 	stages {
 		stage('Build Image'){
@@ -28,6 +28,7 @@ pipeline {
 						docker ps -a | grep -i ${DOCKER_IMAGE} && docker rm -f ${DOCKER_IMAGE}
 						docker run --name ${DOCKER_IMAGE} -dp $PORT_EXT:$PORT_APP ${DOCKERHUB_ID}/${DOCKER_IMAGE}:${DOCKER_TAG}
 						sleep 5
+						docker exec -it ${DOCKER_IMAGE} 'curl -I http://127.0.0.1:8080 | grep -i "200"'
 						curl -I http://$IP:$PORT_EXT | grep -i "200"
 					'''
 				}
