@@ -2,8 +2,8 @@
   hosts: localhost
   gather_facts: false
   vars:
-    kubeconfig_path: "{{ lookup('env', 'HOME') }}/final-project/04_ansible/kubeconfig/kubeconfig"
-    venv_dir: "{{ lookup('env', 'HOME') }}/.venvs/ansible-k8s"
+    kubeconfig_path: "./kubeconfig-k3s.yml"
+    venv_dir: ".venvs/ansible-k8s"
   tasks:
     - name: Wait for k3s to be ready
       pause:
@@ -48,4 +48,4 @@
 
     - name: Apply manifests
       command:
-        cmd: "kubectl --kubeconfig {{ kubeconfig_path }} apply -Rf {{ lookup('env', 'HOME') }}/final-project/03_kubernetes/"
+        cmd: "kubectl --kubeconfig {{ kubeconfig_path }} apply -k ../03_kubernetes/"
