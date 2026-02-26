@@ -5,8 +5,8 @@
   template:
     src: pgadmin-compose.yml.j2
     dest: /home/{{ ansible_user }}/pgadmin-compose.yml
-    mode: '0644'
+    mode: '0555'
 
 - name: start pgadmin stack
   command:
-    cmd: docker-compose -f /home/{{ ansible_user }}/pgadmin-compose.yml up -d
+    cmd: "docker-compose -f /home/{{ ansible_user }}/pgadmin-compose.yml up -d"
