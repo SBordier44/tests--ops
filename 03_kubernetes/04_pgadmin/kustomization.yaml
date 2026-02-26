@@ -1,0 +1,5 @@
+resources:
+  - pgadmin-cm.yaml
+  - pgadmin-secret.yaml
+  - pgadmin-deploy.yaml
+  - pgadmin-svc.yaml
