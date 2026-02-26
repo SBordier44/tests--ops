@@ -88,7 +88,7 @@ pipeline {
 				script {
 					sh '''
 						cd 04_ansible/
-						ansible-playbook playbooks/docker/main.yml
+						ansible-playbook playbooks/docker/main.yml --private-key ../02_terraform/keypair/docker.pem
 					'''
 				}
 			}
@@ -157,7 +157,7 @@ pipeline {
 				script {
 					sh '''
 						cd 04_ansible/
-						ansible-playbook playbooks/k3s/main.yml
+						ansible-playbook playbooks/k3s/main.yml --private-key ../02_terraform/keypair/kubernetes.pem
 					'''
 				}
 			}
