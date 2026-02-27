@@ -165,6 +165,7 @@ pipeline {
         script {
           sh '''
             ls -lisah
+            echo $(pwd)
             HOST_IP=$(grep 'ansible_host:' ../04_ansible/host_vars/k3s.yaml | awk '{print $2}')
             sed -i "s|HOST|$HOST_IP|g" ../03_kubernetes/01_ic-webapp/ic-webapp-cm.yml
             echo "Verifying kubeconfig file..."

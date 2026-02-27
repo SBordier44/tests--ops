@@ -5,11 +5,6 @@
     kubeconfig_path: "./kubeconfig-k3s.yml"
     venv_dir: ".venvs/ansible-k8s"
   tasks:
-    - name: Wait for k3s to be ready
-      pause:
-        seconds: 15
-        prompt: Waiting for k3s to be ready
-
     - name: Install venv prerequisites
       become: true
       apt:
