@@ -164,16 +164,13 @@ pipeline {
       steps {
         script {
           sh '''
-            ls -lisah
-            echo $(pwd)
-            HOST_IP=$(grep 'ansible_host:' ../04_ansible/host_vars/k3s.yaml | awk '{print $2}')
-            sed -i "s|HOST|$HOST_IP|g" ../03_kubernetes/01_ic-webapp/ic-webapp-cm.yml
+            HOST_IP=$(grep 'ansible_host:' 04_ansible/host_vars/k3s.yml | awk '{print $2}')
+            sed -i "s|HOST|$HOST_IP|g" 03_kubernetes/01_ic-webapp/ic-webapp-cm.yaml
             echo "Verifying kubeconfig file..."
             ls -l ../04_ansible/playbooks/k3s/kubeconfig-k3s.yml
             echo "Checking cluster access..."
             kubectl --kubeconfig=04_ansible/playbooks/k3s/kubeconfig-k3s.yml get nodes
-            cd $(pwd)/03_kubernetes/
-            kubectl --kubeconfig=$(pwd)/../04_ansible/playbooks/k3s/kubeconfig-k3s.yml apply -k . --validate=false -v=9
+            kubectl --kubeconfig=04_ansible/playbooks/k3s/kubeconfig-k3s.yml apply -k 03_kubernetes/ --validate=false -v=9
           '''
         }
       }
