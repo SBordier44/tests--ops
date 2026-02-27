@@ -134,7 +134,6 @@ pipeline {
 						cd 02_terraform/
 						terraform init
 						terraform apply -var="stack_name=kubernetes" -auto-approve
-						sleep 1m
 					'''
 				}
 			}
@@ -165,10 +164,11 @@ pipeline {
       steps {
         script {
           sh '''
-            HOST_IP=$(grep 'ansible_host:' 04_ansible/host_vars/k3s.yaml | awk '{print $2}')
-            sed -i "s|HOST|$HOST_IP|g" 03_kubernetes/01_ic-webapp/ic-webapp-cm.yml
+            ls -lisah
+            HOST_IP=$(grep 'ansible_host:' ../04_ansible/host_vars/k3s.yaml | awk '{print $2}')
+            sed -i "s|HOST|$HOST_IP|g" ../03_kubernetes/01_ic-webapp/ic-webapp-cm.yml
             echo "Verifying kubeconfig file..."
-            ls -l 04_ansible/playbooks/k3s/kubeconfig-k3s.yml
+            ls -l ../04_ansible/playbooks/k3s/kubeconfig-k3s.yml
             echo "Checking cluster access..."
             kubectl --kubeconfig=04_ansible/playbooks/k3s/kubeconfig-k3s.yml get nodes
             cd $(pwd)/03_kubernetes/
