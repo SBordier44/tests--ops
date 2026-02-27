@@ -139,7 +139,7 @@ pipeline {
 				}
 			}
 		}
-		stage('Ansible deploy apps on kubernetes EC2'){
+		stage('Ansible on kubernetes EC2'){
 			agent {
 				docker {
 					image 'registry.gitlab.com/robconnolly/docker-ansible:latest'
@@ -155,6 +155,28 @@ pipeline {
 				}
 			}
 		}
+		stage('kubectl deploy'){
+      agent {
+        docker {
+            image 'bitnami/kubectl'
+            args '--entrypoint=""'
+        }
+      }
+      steps {
+        script {
+          sh '''
+            HOST_IP=$(grep 'ansible_host:' 04_ansible/host_vars/k3s.yaml | awk '{print $2}')
+            sed -i "s|HOST|$HOST_IP|g" 03_kubernetes/01_ic-webapp/ic-webapp-cm.yml
+            echo "Verifying kubeconfig file..."
+            ls -l 04_ansible/playbooks/k3s/kubeconfig-k3s.yml
+            echo "Checking cluster access..."
+            kubectl --kubeconfig=04_ansible/playbooks/k3s/kubeconfig-k3s.yml get nodes
+            cd $(pwd)/03_kubernetes/
+            kubectl --kubeconfig=$(pwd)/../04_ansible/playbooks/k3s/kubeconfig-k3s.yml apply -k . --validate=false -v=9
+          '''
+        }
+      }
+    }
 		stage('Destroy Kubernetes') {
       steps {
         input message: "Confirmer vous la suppression du Kubernetes dans AWS ?", ok: 'Yes'
